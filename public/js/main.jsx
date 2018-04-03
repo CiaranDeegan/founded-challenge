@@ -1,5 +1,8 @@
-const React = require('react'),
-    ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Hello from '../components/Hello.jsx'
 
-const element = <h1>Hello, world</h1>;
-ReactDOM.render(element, document.getElementById('root'));
+ReactDOM.render(
+    <Hello />,
+    document.getElementById('root')
+  );
