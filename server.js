@@ -14,3 +14,5 @@ app.use('/api', require('./routes/api.js'));
 httpServer.listen(port, function(){
 	console.log('Server listening on port ' + port);
 });
+
+module.exports = app;
