@@ -16,7 +16,6 @@ class Gallery extends React.Component {
         };
 
         this.toggleFilterState = this.toggleFilterState.bind(this);
-
         this.adjustIndex = this.adjustIndex.bind(this);
     }
 
@@ -34,7 +33,6 @@ class Gallery extends React.Component {
         if(result < 0) result = this.state.imageURLs.length - 1;
         else if (result > this.state.imageURLs.length - 1) result = 0;
 
-        console.log(result);
         this.setState({imageIdx: result});
     }
 
@@ -98,7 +96,7 @@ class Gallery extends React.Component {
         return (
             <div>
                 { this.state.loading ? <h1>Loading</h1> : null }
-                <Filter toggleFilterState={this.toggleFilterState}/>
+                <Filter showCats={this.state.showCats} showSharks={this.state.showSharks} toggleFilterState={this.toggleFilterState}/>
                 { this.state.showCats || this.state.showSharks ? <Carousel imageURLs={this.state.imageURLs} index={this.state.imageIdx} adjustIndex={this.adjustIndex}/>: null}
             </div>
         );
