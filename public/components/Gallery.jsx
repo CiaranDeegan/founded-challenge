@@ -42,49 +42,64 @@ class Gallery extends React.Component {
 
         component.setState({loading: true}, function() {
             if(component.state.showCats && component.state.showSharks) {
-                console.log('both');
-                HTTPClient.get('/api/cats', function(res) {
-                    images.push.apply(images, JSON.parse(res).urls)
-                    HTTPClient.get('/api/sharks', function(res) {
-                        images.push.apply(images, JSON.parse(res).urls);
-                        component.setState({
-                            imageURLs: images,
-                            loading: false,
-                            imageIdx: 0
-                        });
-                    });
+                this.getBoth().then(function(result) {
+                    component.setState(result);
                 });
             }
             else if(component.state.showCats) {
-                console.log('cats');
-                HTTPClient.get('/api/cats', function(res) {
-                    images.push.apply(images, JSON.parse(res).urls)
-                    component.setState({
-                        imageURLs: images,
-                        loading: false,
-                        imageIdx: 0
-                    });
+                this.getOnly('cats').then(function(result) {
+                    component.setState(result);
                 });
             }
             else if(component.state.showSharks) {
-                console.log('sharks');
-                HTTPClient.get('/api/sharks', function(res) {
-                    images.push.apply(images, JSON.parse(res).urls)
-                    component.setState({
-                        imageURLs: images,
-                        loading: false,
-                        imageIdx: 0
-                    });
+                this.getOnly('sharks').then(function(result) {
+                    component.setState(result);
                 });
             }
             else {
-                console.log('neither');
                 component.setState({
                     imageURLs: [],
                     loading: false,
                     imageIdx: 0
                 });
             }
+        });
+    }
+
+    getOnly(animal) {
+        return new Promise(function(resolve) {
+            HTTPClient.get('/api/' + animal, function(res) {
+                let images = JSON.parse(res).urls;
+                resolve({
+                    imageURLs: images,
+                    loading: false,
+                    imageIdx: 0
+                });
+            });
+        }); 
+    }
+
+    getBoth() {
+        return new Promise(function(resolve) {
+            let images = [];
+            HTTPClient.get('/api/cats', function(res) {
+                let cats = JSON.parse(res).urls;
+                HTTPClient.get('/api/sharks', function(res) {
+                    let sharks = JSON.parse(res).urls;
+                    let both = [cats, sharks];
+
+                    //image sets should arrive in random order when both selected
+                    both.sort(() => Math.random() - 0.5);
+                    images.push.apply(images, both[0]);
+                    images.push.apply(images, both[1]);
+
+                    resolve({
+                        imageURLs: images,
+                        loading: false,
+                        imageIdx: 0
+                    });
+                });
+            });
         });
     }
 
