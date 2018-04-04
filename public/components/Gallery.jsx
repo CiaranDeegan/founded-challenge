@@ -10,7 +10,8 @@ class Gallery extends React.Component {
         this.state = {
             showCats: true,
             showSharks: true,
-            imageURLs: []
+            imageURLs: [],
+            loading: true
         };
 
         this.toggleFilterState = this.toggleFilterState.bind(this);
@@ -28,42 +29,48 @@ class Gallery extends React.Component {
         let component = this;
         let images = [];
 
-        if(component.state.showCats && component.state.showSharks) {
-            console.log('both');
-            HTTPClient.get('/api/cats', function(res) {
-                images.push.apply(images, JSON.parse(res).urls)
-                HTTPClient.get('/api/sharks', function(res) {
-                    images.push.apply(images, JSON.parse(res).urls);
-                    component.setState({
-                        imageURLs: images
+        component.setState({loading: true}, function() {
+            if(component.state.showCats && component.state.showSharks) {
+                console.log('both');
+                HTTPClient.get('/api/cats', function(res) {
+                    images.push.apply(images, JSON.parse(res).urls)
+                    HTTPClient.get('/api/sharks', function(res) {
+                        images.push.apply(images, JSON.parse(res).urls);
+                        component.setState({
+                            imageURLs: images,
+                            loading: false
+                        });
                     });
                 });
-            });
-        }
-        else if(component.state.showCats) {
-            console.log('cats');
-            HTTPClient.get('/api/cats', function(res) {
-                images.push.apply(images, JSON.parse(res).urls)
-                component.setState({
-                    imageURLs: images
+            }
+            else if(component.state.showCats) {
+                console.log('cats');
+                HTTPClient.get('/api/cats', function(res) {
+                    images.push.apply(images, JSON.parse(res).urls)
+                    component.setState({
+                        imageURLs: images,
+                        loading: false
+                    });
                 });
-            });
-        }
-        else if(component.state.showSharks) {
-            console.log('sharks');
-            HTTPClient.get('/api/sharks', function(res) {
-                images.push.apply(images, JSON.parse(res).urls)
-                component.setState({
-                    imageURLs: images
+            }
+            else if(component.state.showSharks) {
+                console.log('sharks');
+                HTTPClient.get('/api/sharks', function(res) {
+                    images.push.apply(images, JSON.parse(res).urls)
+                    component.setState({
+                        imageURLs: images,
+                        loading: false
+                    });
                 });
-            });
-        }
-        else {
-            console.log('neither');
-            component.setState({
-                imageURLs: []
-            });
-        }
+            }
+            else {
+                console.log('neither');
+                component.setState({
+                    imageURLs: [],
+                    loading: false
+                });
+            }
+        });
     }
 
     componentDidMount() {
@@ -73,6 +80,7 @@ class Gallery extends React.Component {
     render() {
         return (
             <div>
+                { this.state.loading ? <h1>Loading</h1> : null }
                 <Filter toggleFilterState={this.toggleFilterState}/>
                 <Carousel imageURLs={this.state.imageURLs}/>
             </div>
