@@ -73,12 +73,11 @@ class Gallery extends React.Component {
                     HTTPClient.get('/api/' + animalB, function(res) {
                         let images = [];
                         let imagesB = JSON.parse(res).urls;
-                        let both = [imagesA, imagesB];
 
-                        //image sets should arrive in random order when both selected
-                        both.sort(() => Math.random() - 0.5);
-                        images.push.apply(images, both[0]);
-                        images.push.apply(images, both[1]);
+                        //images should be randomised when both selected
+                        images.push.apply(images, imagesA);
+                        images.push.apply(images, imagesB);
+                        images.sort(() => Math.random() - 0.5);
 
                         resolve({
                             imageURLs: images,
