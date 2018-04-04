@@ -23,7 +23,7 @@ class Gallery extends React.Component {
         var state = {};
         state[field] = !this.state[field];
         this.setState(state, function() {
-            this.setImages();
+            this.updateImages();
         });
     }
 
@@ -36,23 +36,22 @@ class Gallery extends React.Component {
         this.setState({imageIdx: result});
     }
 
-    setImages() {
+    updateImages() {
         let component = this;
-        let images = [];
 
         component.setState({loading: true}, function() {
             if(component.state.showCats && component.state.showSharks) {
-                this.getBoth().then(function(result) {
+                this.getImages('cats', 'sharks').then(function(result) {
                     component.setState(result);
                 });
             }
             else if(component.state.showCats) {
-                this.getOnly('cats').then(function(result) {
+                this.getImages('cats').then(function(result) {
                     component.setState(result);
                 });
             }
             else if(component.state.showSharks) {
-                this.getOnly('sharks').then(function(result) {
+                this.getImages('sharks').then(function(result) {
                     component.setState(result);
                 });
             }
@@ -66,45 +65,41 @@ class Gallery extends React.Component {
         });
     }
 
-    getOnly(animal) {
+    getImages(animalA, animalB) {
         return new Promise(function(resolve) {
-            HTTPClient.get('/api/' + animal, function(res) {
-                let images = JSON.parse(res).urls;
-                resolve({
-                    imageURLs: images,
-                    loading: false,
-                    imageIdx: 0
-                });
+            HTTPClient.get('/api/' + animalA, function(res) {
+                let imagesA = JSON.parse(res).urls;
+                if(animalB) {
+                    HTTPClient.get('/api/' + animalB, function(res) {
+                        let images = [];
+                        let imagesB = JSON.parse(res).urls;
+                        let both = [imagesA, imagesB];
+
+                        //image sets should arrive in random order when both selected
+                        both.sort(() => Math.random() - 0.5);
+                        images.push.apply(images, both[0]);
+                        images.push.apply(images, both[1]);
+
+                        resolve({
+                            imageURLs: images,
+                            loading: false,
+                            imageIdx: 0
+                        });
+                    });
+                }
+                else {
+                    resolve({
+                        imageURLs: imagesA,
+                        loading: false,
+                        imageIdx: 0
+                    });
+                }
             });
         }); 
     }
 
-    getBoth() {
-        return new Promise(function(resolve) {
-            let images = [];
-            HTTPClient.get('/api/cats', function(res) {
-                let cats = JSON.parse(res).urls;
-                HTTPClient.get('/api/sharks', function(res) {
-                    let sharks = JSON.parse(res).urls;
-                    let both = [cats, sharks];
-
-                    //image sets should arrive in random order when both selected
-                    both.sort(() => Math.random() - 0.5);
-                    images.push.apply(images, both[0]);
-                    images.push.apply(images, both[1]);
-
-                    resolve({
-                        imageURLs: images,
-                        loading: false,
-                        imageIdx: 0
-                    });
-                });
-            });
-        });
-    }
-
     componentDidMount() {
-        this.setImages();
+        this.updateImages();
     }
 
     render() {
