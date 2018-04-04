@@ -95,8 +95,8 @@ class Gallery extends React.Component {
     render() {
         return (
             <div>
-                { this.state.loading ? <h1>Loading</h1> : null }
                 <Filter showCats={this.state.showCats} showSharks={this.state.showSharks} toggleFilterState={this.toggleFilterState}/>
+                { this.state.loading ? <h1 className="content has-text-centered">Loading</h1> : <h1 className="content has-text-centered">&nbsp;</h1> }
                 { this.state.showCats || this.state.showSharks ? <Carousel imageURLs={this.state.imageURLs} index={this.state.imageIdx} adjustIndex={this.adjustIndex}/>: null}
             </div>
         );
