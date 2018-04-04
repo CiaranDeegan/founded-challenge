@@ -5,7 +5,9 @@ class Carousel extends React.Component {
     render() {
         return (
             <div>
-                <img src={this.props.imageURLs[Math.floor(Math.random() * (this.props.imageURLs.length))]}/>
+                <button onClick={() => this.props.adjustIndex(-1)}>PREV</button>
+                <img src={this.props.imageURLs[this.props.index]}/>
+                <button onClick={() => this.props.adjustIndex(1)}>NEXT</button>
             </div>
         );
     }

@@ -11,10 +11,13 @@ class Gallery extends React.Component {
             showCats: true,
             showSharks: true,
             imageURLs: [],
-            loading: true
+            imageIdx: 0,
+            loading: true,
         };
 
         this.toggleFilterState = this.toggleFilterState.bind(this);
+
+        this.adjustIndex = this.adjustIndex.bind(this);
     }
 
     toggleFilterState(field) {
@@ -23,6 +26,16 @@ class Gallery extends React.Component {
         this.setState(state, function() {
             this.setImages();
         });
+    }
+
+    adjustIndex(adjustment) {
+        let result = this.state.imageIdx + adjustment;
+
+        if(result < 0) result = this.state.imageURLs.length - 1;
+        else if (result > this.state.imageURLs.length - 1) result = 0;
+
+        console.log(result);
+        this.setState({imageIdx: result});
     }
 
     setImages() {
@@ -38,7 +51,8 @@ class Gallery extends React.Component {
                         images.push.apply(images, JSON.parse(res).urls);
                         component.setState({
                             imageURLs: images,
-                            loading: false
+                            loading: false,
+                            imageIdx: 0
                         });
                     });
                 });
@@ -49,7 +63,8 @@ class Gallery extends React.Component {
                     images.push.apply(images, JSON.parse(res).urls)
                     component.setState({
                         imageURLs: images,
-                        loading: false
+                        loading: false,
+                        imageIdx: 0
                     });
                 });
             }
@@ -59,7 +74,8 @@ class Gallery extends React.Component {
                     images.push.apply(images, JSON.parse(res).urls)
                     component.setState({
                         imageURLs: images,
-                        loading: false
+                        loading: false,
+                        imageIdx: 0
                     });
                 });
             }
@@ -67,7 +83,8 @@ class Gallery extends React.Component {
                 console.log('neither');
                 component.setState({
                     imageURLs: [],
-                    loading: false
+                    loading: false,
+                    imageIdx: 0
                 });
             }
         });
@@ -82,7 +99,7 @@ class Gallery extends React.Component {
             <div>
                 { this.state.loading ? <h1>Loading</h1> : null }
                 <Filter toggleFilterState={this.toggleFilterState}/>
-                <Carousel imageURLs={this.state.imageURLs}/>
+                <Carousel imageURLs={this.state.imageURLs} index={this.state.imageIdx} adjustIndex={this.adjustIndex}/>
             </div>
         );
     }
