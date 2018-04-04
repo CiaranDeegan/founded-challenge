@@ -1,13 +1,15 @@
 import React from 'react';
-import HTTPClient from '../js/http.js';
+import styles from './Carousel.css'
 
 class Carousel extends React.Component {
     render() {
         return (
-            <div>
-                <button onClick={() => this.props.adjustIndex(-1)}>PREV</button>
-                <img src={this.props.imageURLs[this.props.index]}/>
-                <button onClick={() => this.props.adjustIndex(1)}>NEXT</button>
+            <div className={styles.carousel}>
+                <button className="button is-info" onClick={() => this.props.adjustIndex(-1)}>&lt;</button>
+                <figure className="image">
+                    <img src={this.props.imageURLs[this.props.index]}/>
+                </figure>
+                <button className="button is-info" onClick={() => this.props.adjustIndex(1)}>&gt;</button>
             </div>
         );
     }

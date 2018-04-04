@@ -1,0 +1,22 @@
+.carousel {
+    margin: 0 auto;
+    width: 360px;
+    height: 250px;
+    position: relative;
+}
+
+.carousel figure {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.carousel button {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+}
+
+.carousel button:last-of-type {
+    right: 0px;
+}
