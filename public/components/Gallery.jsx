@@ -99,7 +99,7 @@ class Gallery extends React.Component {
             <div>
                 { this.state.loading ? <h1>Loading</h1> : null }
                 <Filter toggleFilterState={this.toggleFilterState}/>
-                <Carousel imageURLs={this.state.imageURLs} index={this.state.imageIdx} adjustIndex={this.adjustIndex}/>
+                { this.state.showCats || this.state.showSharks ? <Carousel imageURLs={this.state.imageURLs} index={this.state.imageIdx} adjustIndex={this.adjustIndex}/>: null}
             </div>
         );
     }
